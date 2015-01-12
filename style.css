@@ -1,0 +1,169 @@
+html {
+    overflow-y: scroll;
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 80px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+.container .text-muted {
+  margin: 20px 0;
+  color: #ccc;
+}
+
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+
+.splash {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	filter: alpha(opacity=60);
+	opacity: 0.6;
+	background: #000;
+	text-align: center;
+}
+
+.splash:before {
+	content: '';
+	height: 100%;
+	width: 1px;
+	margin-left: -1px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.splash h2 {
+	text-align: center;
+	font-size: 4em;
+	color: white;
+	display: inline-block;
+	vertical-align: middle;
+	white-space: normal;
+}
+
+#main {
+	display: none;
+}
+
+.done-true {
+	text-decoration: line-through;
+	color: #dcddde;
+}
+
+
+
+
+
+
+table td.actions,
+table th.actions {
+	text-align: center;
+}
+
+table tbody td {
+	color: #8C8C8C;
+	border-left: 1px solid #dcddde;
+	font-weight: normal;
+}
+
+table tbody .alt td {
+	background: #EBEBEB;
+	color: #8C8C8C;
+}
+
+table tbody td:first-child {
+	border-left: none !important;
+	text-align: center;
+}
+
+table th:nth-child(1),
+table th:nth-child(3),
+table th:nth-child(4),
+table th:nth-child(5),
+table td:nth-child(1),
+table td:nth-child(3),
+table td:nth-child(4),
+table td:nth-child(5) {
+	width: 5%;
+	border-left: none !important;
+	border-right: none !important;
+}
+
+table th:nth-child(2) {
+	border-right: none !important;
+}
+
+table td:nth-child(2) {
+	border-right: none !important;
+}
+
+table td:nth-child(6),
+table td:nth-child(7) {
+	width: 5%;
+}
+
+table .glyphicon {
+	display: none !important;
+}
+
+table tbody tr:hover .glyphicon {
+	display: block !important;
+	cursor: pointer;
+}
+
+table tbody tr .fa-arrow-up.true {
+	color: red;
+}
+
+table tbody tr.priority-true {
+	background-color: rgb(254, 203, 203) !important;
+}
+
+table a:hover {
+	text-decoration: none;
+}
+
+.nav-tabs {
+	border-bottom-color: #FFF;
+}
+
+
+
+
+@media (max-width: 767px) {
+	.navbar-nav {
+		display: none;
+	}
+	#main > .container {
+		padding-top: 138px;
+	}
+}
+
+@media (min-width: 768px) {
+	#main > .container {
+		padding-top: 117px;
+	}
+}
+
+@media (min-width: 992px) {
+	#main > .container {
+		padding-top: 71px;
+	}
+}
+
+@media (min-width: 1200px) {
+}
