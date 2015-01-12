@@ -1,1 +1,1 @@
-# task-list
+# AngularJS & Firebase powered task list
