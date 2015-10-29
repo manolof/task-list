@@ -1,166 +1,168 @@
 <!doctype html>
-<html data-ng-app="Todo" data-ng-controller="TodoController" class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ appTitle }} - {{ remaining() }}/{{ (todosList|filter:{isCompleted:false}).length }}</title>
+<html data-ng-app="todo_list" data-ng-controller="TodoController" class="no-js" lang="">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ appTitle }} - {{ doneCount }}/{{ totalCount - completedCount }}</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
 
-        <link href="css/bootstrap.min.css" rel="stylesheet">
+<body>
+<div class="splash">
+	<h2>Loading</h2>
+</div>
+<div id="main">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="col-xs-12 col-sm-4 col-sm-offset-0">
+				<a class="navbar-brand" href="#" data-ng-bind="appTitle"></a>
+			</div>
+			<div id="navbar" class=" col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-0">
+				<div class="nav navbar-nav">
+					<p class="navbar-text remaining">{{ doneCount }} of {{ totalCount - completedCount }} remaining</p>
 
-        <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
+					<p class="navbar-text compl_total">({{ completedCount }} completed in total)</p>
 
-    <body>
-        <div class="splash">
-            <h2>Loading</h2>
-        </div>
-        <div id="main">
-            <nav class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container">
-                    <div class="col-xs-12 col-sm-4 col-sm-offset-0">
-                        <a class="navbar-brand" href="#" data-ng-bind="appTitle"></a>
-                    </div>
-                    <div id="navbar" class=" col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-0">
-                        <form class="navbar-form navbar-right">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-addon">
-                                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                                </span>
-                                <input type="text" class="form-control" placeholder="Search for..." ng-model="search">
-                                <span class="input-group-btn" ng-show="search">
-                                <button class="btn btn-inverse" ng-click="search=''" type="button"><span class="glyphicon glyphicon-remove"></span>
-                                </button>
-                                </span>
-                            </div>
-                        </form>
-                        <div class="nav navbar-nav navbar-right">
-                            <p class="navbar-text">{{ remaining() }} of {{ (todosList|filter:{isCompleted:false}).length }} remaining</p>
-                            <p class="navbar-text">({{ (todosList|filter:{isCompleted:true}).length }} completed in total)</p>
-                            <p class="navbar-text"><a class="text-danger" href="" data-ng-click="archive()" data-ng-show="remaining() !== (todosList|filter:{isCompleted:false}).length">Remove Completed Items</a>
-                            </p>
-                        </div>
-                    </div>
-                    <!--/.navbar-collapse -->
-                </div>
-            </nav>
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
-                        <div class="row" role="tabpanel">
-                            <!-- Nav tabs -->
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li role="presentation" class="active">
-                                    <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Pending Tasks</a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Completed Tasks</a>
-                                </li>
-                            </ul>
+					<p class="navbar-text">
+						<a class="text-danger" href="" data-ng-click="archive()" data-ng-show="doneCount !== totalCount - completedCount">Remove Completed Items</a>
+					</p>
+				</div>
+				<form class="navbar-form pull-right">
+					<div class="input-group input-group-sm">
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+						</span>
+						<input type="text" class="form-control" placeholder="Search for..." ng-model="search">
+						<span class="input-group-btn" ng-show="search">
+							<button class="btn btn-inverse" ng-click="search=''" type="button">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</span>
+					</div>
+				</form>
+			</div>
+			<!--/.navbar-collapse -->
+		</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
+				<div class="row" role="tabpanel">
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs" role="tablist">
+						<li role="presentation" class="active">
+							<a href="#pending" aria-controls="home" role="tab" data-toggle="tab">Pending Tasks</a>
+						</li>
+						<li role="presentation">
+							<a href="#completed" aria-controls="profile" role="tab" data-toggle="tab">Completed Tasks</a>
+						</li>
+					</ul>
 
-                            <!-- Tab panes -->
-                            <div class="tab-content">
-                                <div role="tabpanel" class="tab-pane active" id="home">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered" data-ng-show="todosList.length">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>
-                                                        TITLE
-                                                    </th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th class="actions">
-                                                        PROD
-                                                    </th>
-                                                    <th class="actions">
-                                                        DEV
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr data-ng-repeat="todo in todosList | filter : search | filter : {isCompleted : false} | orderBy:'-priority'" class="{{!!todo.priority ? 'warning' : ''}}">
-                                                    <td>
-                                                        <span data-ng-bind="$index+1"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="done-{{ todo.doneProd && todo.doneDev }}" data-ng-bind="todo.text"></span>
-                                                    </td>
-                                                    <td class="actions">
-                                                        <a data-ng-click="delete(todo)" title="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
-                                                    </td>
-                                                    <td class="actions">
-                                                        <a data-ng-click="edit(todo)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                    </td>
-                                                    <td class="actions">
-                                                        <a data-ng-click="priority(todo)" title="Priority low/high"><span class="glyphicon glyphicon-flag"></span></a>
-                                                    </td>
-                                                    <td class="actions">
-                                                        <input type="checkbox" data-ng-model="todo.doneProd" data-ng-change="checkboxClick(todo)">
-                                                    </td>
-                                                    <td class="actions">
-                                                        <input type="checkbox" data-ng-model="todo.doneDev" data-ng-change="checkboxClick(todo)">
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div role="tabpanel" class="tab-pane" id="profile">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered" data-ng-show="(todosList|filter:{isCompleted:true}).length">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>
-                                                        TITLE
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr data-ng-repeat="todo in todosList | filter : {isCompleted:true}">
-                                                    <td>
-                                                        <span data-ng-bind="$index+1"></span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="done-{{ todo.doneProd && todo.doneDev }}" data-ng-bind="todo.text"></span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+					<!-- Tab panes -->
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane active" id="pending">
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered" data-ng-show="totalCount">
+									<thead>
+									<tr>
+										<th></th>
+										<th>
+											TITLE
+										</th>
+										<th></th>
+										<th></th>
+										<th></th>
+										<th></th>
+										<th class="actions">
+											Done
+										</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr data-ng-repeat="todo in todos | filter : search | filter : {isCompleted : false} | orderBy:'-priority'" class="{{todo.priority === 1 ? 'danger' : todo.priority === -1 ? 'warning' : ''}}">
+										<td>
+											<span data-ng-bind="$index+1"></span>
+										</td>
+										<td>
+											<span class="done-{{ todo.done }}" data-ng-bind="todo.text"></span>
+										</td>
+										<td class="actions">
+											<a data-ng-click="delete(todo)" title="Delete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+										</td>
+										<td class="actions">
+											<a data-ng-click="edit(todo)" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+										</td>
+										<td class="actions">
+											<a data-ng-click="priority(todo, 1)" title="Priority High"><span class="glyphicon glyphicon-arrow-up"></span></a>
+										</td>
+										<td class="actions">
+											<a data-ng-click="priority(todo, -1)" title="Priority Low"><span class="glyphicon glyphicon-arrow-down"></span></a>
+										</td>
+										<td class="actions">
+											<input type="checkbox" data-ng-model="todo.done" data-ng-change="checkboxClick(todo)">
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane" id="completed">
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered" data-ng-show="totalCount">
+									<thead>
+									<tr>
+										<th></th>
+										<th>
+											TITLE
+										</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr data-ng-repeat="todo in todos | filter : {isCompleted:true}">
+										<td>
+											<span data-ng-bind="$index+1"></span>
+										</td>
+										<td>
+											<span class="done-{{ todo.done }}" data-ng-bind="todo.text"></span>
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                        <div class="row">
-                            <form data-ng-submit="addTodo()" class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-                                <div class="input-group input-group-lg">
-                                    <input type="text" class="form-control" data-ng-model="todoText" placeholder="Enter new task item">
-                                    <span class="input-group-btn">
-                                    <button class="btn btn-primary" type="submit">Add Task</button>
-                                  </span>
-                                </div>
-                            </form>
-                        </div>
+				<div class="row">
+					<form data-ng-submit="addTodo()" class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+						<div class="input-group input-group-lg">
+							<input type="text" class="form-control" data-ng-model="todoText" placeholder="Enter new task item">
+							<span class="input-group-btn">
+								<button class="btn btn-primary" type="submit">Add Task</button>
+							</span>
+						</div>
+					</form>
+				</div>
 
-                    </div>
-                </div>
-            </div>
-            <footer class="footer">
-                <div class="container">
-                    <p class="text-muted">© <script>document.write(new Date().getFullYear())</script> Emmanouil Gketsim for Cultural Care Au Pair</p>
-                </div>
-            </footer>
-        </div>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.1/angular.min.js"></script>
-        <script src="https://cdn.firebase.com/v0/firebase.js"></script>
-        <script src="https://cdn.firebase.com/libs/angularfire/0.8.0/angularfire.min.js"></script>
-        <script src="ctrl.js"></script>
-    </body>
+			</div>
+		</div>
+	</div>
+	<footer class="footer">
+		<div class="container">
+			<p class="text-muted">©
+				<script>document.write(new Date().getFullYear())</script>
+				Emmanouil Gketsim
+			</p>
+		</div>
+	</footer>
+</div>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/bootstrap-sass/assets/javascripts/bootstrap.min.js"></script>
+<script src="bower_components/angular/angular.min.js"></script>
+<script src="bower_components/firebase/firebase.js"></script>
+<script src="bower_components/angularfire/dist/angularfire.min.js"></script>
+<script src="js/ctrl.js"></script>
+</body>
 </html>
